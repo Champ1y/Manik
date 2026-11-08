@@ -30,3 +30,13 @@ test('missing costs and durations are never invented', () => {
   assert.equal(formatDuration(90), '90 мин');
   assert.match(formatPrice(2000), /2\s000 ₽/);
 });
+
+test('zero price is distinct from unknown and recommendations preserve their inputs', () => {
+  assert.equal(formatPrice(0), '0 ₽');
+  assert.equal(formatDuration(0), '0 мин');
+  const before = structuredClone(portfolio);
+  recommendWorks(portfolio, { style: 'natural', length: 'short', shade: 'nude' });
+  filterPortfolio(portfolio, 'nude');
+  assert.deepEqual(portfolio, before);
+  assert.deepEqual(recommendWorks([], { style: 'natural', length: 'any', shade: 'any' }), []);
+});

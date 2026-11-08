@@ -9,3 +9,5 @@ out/
 test-results/
 playwright-report/
 *.log
+coverage/
+blob-report/

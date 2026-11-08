@@ -11,14 +11,14 @@ const ready: ReleaseContent = {
   seo: { siteUrl: 'https://example.ru', legal: { operatorName: 'test', contactEmail: 'test@example.ru', policyReviewed: true } },
   contacts: { phone: '+79999999999' },
   locations: [{ ...locations[0], address: 'test', hours: 'test', yandexMapsUrl: 'https://yandex.ru/maps/', twoGisUrl: 'https://2gis.ru/' }],
-  booking: { provider: 'dikidi', url: 'https://dikidi.ru/test', messengerLabel: '', messengerUrl: '' },
+  booking: { provider: 'dikidi', status: 'ready', url: 'https://dikidi.ru/test', messengerLabel: '', messengerUrl: '' },
   portfolio: [{ ...portfolio[0], demo: false }], diplomas: [{ id: 'test', title: 'test', image: '/test.webp' }], reviews: [],
   analytics: { enabled: false, yandexMetrikaId: '', legalReady: false, requireConsent: true },
 };
 test('unfinished demo is blocked from publishing and indexing', () => {
   assert.equal(isPublishable, false);
   assert.ok(publicationIssues.length > 5);
-  assert.ok(publicationIssues.some(issue => issue.includes('онлайн') || issue.includes('записи')));
+  assert.ok(publicationIssues.some(issue => issue.includes('реальные работы')));
 });
 test('complete fields allow release check without inventing reviews', () => {
   assert.deepEqual(releaseIssues(ready), []);
@@ -34,4 +34,7 @@ test('analytics cannot be enabled without legal readiness and valid counter', ()
 });
 test('missing contact or location blocks release', () => {
   assert.ok(releaseIssues({ ...ready, contacts: { phone: '' }, locations: [] }).length >= 2);
+});
+test('release rejects paused booking even if a real URL is configured', () => {
+  assert.ok(releaseIssues({ ...ready, booking: { ...ready.booking, status: 'paused' } }).some(issue => issue.includes('онлайн-запись')));
 });

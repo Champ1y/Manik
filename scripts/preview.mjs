@@ -17,4 +17,6 @@ createServer(async (request, response) => {
     response.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
     response.end(await readFile(resolve(root, '404.html')).catch(() => '404'));
   }
-}).listen(4173, '127.0.0.1', () => console.log('Local: http://127.0.0.1:4173'));
+}).listen(Number(process.env.PORT || 4173), '127.0.0.1', function () {
+  console.log(`Local: http://127.0.0.1:${this.address().port}`);
+});

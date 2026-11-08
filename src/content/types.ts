@@ -30,6 +30,7 @@ export interface Service {
   description: string;
   includes: string;
   extra: string;
+  confirmed: boolean;
   price?: number;
   durationMinutes?: number;
 }
@@ -41,6 +42,7 @@ export interface Location {
   address: string;
   hours: string;
   entrancePhoto: string;
+  landmark?: string;
   yandexMapsUrl: string;
   twoGisUrl: string;
   yandexReviewsUrl: string;
@@ -65,7 +67,20 @@ export interface Diploma {
 
 export interface BookingConfig {
   provider: 'dikidi' | 'yclients' | 'custom';
+  status: 'not_configured' | 'ready' | 'paused';
   url: string;
+  fallbackUrl?: string;
   messengerLabel: string;
   messengerUrl: string;
+  dikidi?: {
+    scriptUrl: string;
+    widgetUrl: string;
+    serviceWidgets: Record<string, {
+      widgetUrl: string;
+      fallbackUrl?: string;
+      // Справочные ID из кабинета; параметры URL из них не конструируются.
+      serviceId?: string;
+      staffId?: string;
+    }>;
+  };
 }

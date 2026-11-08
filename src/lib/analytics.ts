@@ -1,6 +1,6 @@
 import { analytics } from '../content/seo';
 
-export type AnalyticsEvent = 'booking_click' | 'booking_outbound' | 'quiz_start' | 'quiz_complete' | 'work_select' | 'contacts_click' | 'route_open' | 'messenger_outbound' | 'repeat_booking_click' | 'share_click';
+export type AnalyticsEvent = 'booking_click' | 'booking_outbound' | 'booking_widget_click' | 'quiz_start' | 'quiz_complete' | 'work_select' | 'contacts_click' | 'route_open' | 'messenger_outbound' | 'repeat_booking_click' | 'share_click';
 
 declare global {
   interface Window {

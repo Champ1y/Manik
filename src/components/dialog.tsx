@@ -8,10 +8,16 @@ export function Dialog({ title, onClose, children, className = '' }: { title: st
   const id = useId();
   useEffect(() => {
     const dialog = ref.current;
+    const trigger = document.activeElement;
     dialog?.showModal();
     const previous = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    return () => { dialog?.close(); document.body.style.overflow = previous; };
+    return () => {
+      dialog?.close();
+      document.body.style.overflow = previous;
+      // React can remove the dialog before native close() restores its opener.
+      if (trigger instanceof HTMLElement && trigger.isConnected) trigger.focus({ preventScroll: true });
+    };
   }, []);
   return <dialog ref={ref} aria-labelledby={id} className={`dialog ${className}`} onCancel={onClose} onClick={event => { if (event.target === event.currentTarget) onClose(); }}>
     <div className="dialog-inner">

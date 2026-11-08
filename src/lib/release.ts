@@ -1,5 +1,5 @@
 import type { BookingConfig, Diploma, Location, PortfolioWork, Review } from '../content/types';
-import { isSafeUrl } from './booking';
+import { getBookingTarget, getBookingWarnings, isSafeUrl } from './booking';
 
 export interface ReleaseContent {
   studio: { demo: boolean; brand: string; masterName: string; biography: string; education: string; portrait: string; sanitation: string };
@@ -26,7 +26,8 @@ export function releaseIssues(data: ReleaseContent): string[] {
     if (!location.address || !location.hours) issues.push(`Укажите адрес и график: ${location.id}.`);
     if (!isSafeUrl(location.yandexMapsUrl) || !isSafeUrl(location.twoGisUrl)) issues.push(`Укажите ссылки маршрутов: ${location.id}.`);
   }
-  if (!isSafeUrl(data.booking.url)) issues.push('Подключите HTTPS-ссылку на внешний сервис записи.');
+  if (!getBookingTarget(data.booking)) issues.push('Подключите онлайн-запись: нужны статус ready и безопасная ссылка сервиса.');
+  issues.push(...getBookingWarnings(data.booking).filter(warning => !warning.startsWith('Запись не активирована')));
   if (data.booking.messengerUrl && !isSafeUrl(data.booking.messengerUrl)) issues.push('Проверьте ссылку мессенджера.');
   if (!data.portfolio.some(work => !work.demo)) issues.push('Добавьте реальные работы в портфолио.');
   if (data.portfolio.some(work => work.demo)) issues.push('Удалите демонстрационные работы перед публичным запуском.');
