@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { buildDesignLink, buildWishText, createBookingAdapter, getBookingContact, getBookingTarget, getBookingWarnings, isDikidiScriptUrl, isDikidiUrl, isDikidiWidgetUrl, isSafeUrl } from '../src/lib/booking';
 import { portfolio } from '../src/content/portfolio';
 import { services } from '../src/content/services';
+import { booking } from '../src/content/booking';
 import type { BookingConfig } from '../src/content/types';
 
 const config: BookingConfig = { provider: 'dikidi', status: 'ready', url: 'https://dikidi.ru/example?lang=ru', messengerLabel: '', messengerUrl: '' };
@@ -25,7 +26,11 @@ const widgetConfig: BookingConfig = { ...config, dikidi: {
   serviceWidgets: { gel: { widgetUrl: 'https://dikidi.net/#widget=10002', serviceId: 'test-service', staffId: 'test-staff' } },
 } };
 test('general DIKIDI booking uses the exact supplied profile with no invented parameters', () => {
-  assert.deepEqual(getBookingTarget({ ...config, url: 'https://dikidi.ru/2199286' }), { directUrl: 'https://dikidi.ru/2199286', widgetUrl: null, servicePreset: false });
+  const url = 'https://dikidi.ru/2197744';
+  assert.equal(booking.url, url);
+  for (const serviceId of [undefined, ...services.map(service => service.id)]) {
+    assert.deepEqual(getBookingTarget(booking, serviceId), { directUrl: url, widgetUrl: null, servicePreset: false });
+  }
 });
 test('official service widget is selected by site service id and never constructed from provider ids', () => {
   const target = getBookingTarget(widgetConfig, 'gel', { utm_source: 'vk' });

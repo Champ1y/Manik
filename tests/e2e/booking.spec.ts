@@ -2,6 +2,7 @@ import { build } from 'esbuild';
 import { readFile } from 'node:fs/promises';
 import { test, expect, visit, type NetworkStub } from '../fixtures/site';
 import type { Page } from '@playwright/test';
+import { booking } from '../../src/content/booking';
 
 const scriptUrl = 'https://dikidi.net/assets/js/widget_record/widget2.min.js';
 let bundle: string;
@@ -60,11 +61,11 @@ test('failed widget script uses exact direct link without blocking the customer'
   networkStubs.set(scriptUrl, { body: '', contentType: 'text/javascript', fail: true });
   await harness(page, 'widget');
   const general = page.getByRole('button', { name: 'Записаться', exact: true });
-  await expect(general).toHaveAttribute('href', 'https://dikidi.ru/2199286');
+  await expect(general).toHaveAttribute('href', booking.url);
   const pending = page.waitForEvent('popup');
   await general.click();
   const popup = await pending;
-  await expect(popup).toHaveURL('https://dikidi.ru/2199286');
+  await expect(popup).toHaveURL(booking.url);
   await popup.close();
   expect(diagnostics.expectedFailures.length).toBeGreaterThan(0);
 });
@@ -79,7 +80,7 @@ test('keyboard uses direct page without overwriting the official widget href', a
   await general.focus();
   await general.press('Enter');
   const popup = await pending;
-  await expect(popup).toHaveURL('https://dikidi.ru/2199286');
+  await expect(popup).toHaveURL(booking.url);
   await popup.close();
   await expect(general).toHaveAttribute('href', 'https://dikidi.net/#widget=10001');
   await expect(page.getByRole('dialog')).toHaveCount(0);

@@ -2,7 +2,7 @@ import type { BookingConfig } from './types';
 export const booking: BookingConfig = {
   provider: 'dikidi',
   status: 'ready', // Подключена общая запись. Код виджета пока не предоставлен.
-  url: 'https://dikidi.ru/2199286',
+  url: 'https://dikidi.ru/2197744',
   fallbackUrl: '', // Если отличается от основной ссылки.
   messengerLabel: 'Написать мастеру',
   messengerUrl: '',
